@@ -9,10 +9,16 @@
        this.serverUrl = url;
    } 
 
-   App.RemoteDataStore = RemoteDataStore;
-   window.App = App;
-})(window);
- 
+  
+  
+RemoteDataStore.prototype.getAll = function (cb) {
+    // make a "get" call to server URL
+    // pass in an anonymous function that calls the "cb" callback funstion
+    $.get(this.serverUrl, function (serverResponse){
+        console.log(serverResponse);
+        cb(serverResponse);
+    });
+}
 
    RemoteDataStore.prototype.add = fundtion (key,val) {
        // Call jQuery's $.post method to send the value to the serverUrl
@@ -23,10 +29,12 @@
         
 
    };
-
-      
-     
    
+   App.RemoteDataStore = RemoteDataStore;
+   window.App = App;
+})(window);
+     
+
 
     
  
