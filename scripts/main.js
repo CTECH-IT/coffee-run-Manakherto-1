@@ -42,7 +42,7 @@ RemoteDataStore.prototype.getAll = function (cb) {
     });
 }
 
-   RemoteDataStore.prototype.add = fundtion (key,val) {
+   RemoteDataStore.prototype.add = fundtion (key,val)
        // Call jQuery's $.post method to send the value to the serverUrl
        // when the server responds, call an anonymous function with serverResponse
        $.pot(this.serverUrl,val, function(serverResponse) {
@@ -50,7 +50,7 @@ RemoteDataStore.prototype.getAll = function (cb) {
        });
         
 
-   };
+   });
    
    RemoteDataStore.prototype.get = function (key,cb) {
        // make a get call to the server, but pass an email address
@@ -71,7 +71,8 @@ RemoteDataStore.prototype.getAll = function (cb) {
 
    App.RemoteDataStore = RemoteDataStore;
    window.App = App;
-})(window);
+
+(window);
      
 
 let Validation = {
