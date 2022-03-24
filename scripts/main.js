@@ -1,15 +1,37 @@
 (function (window) {
     'use strict'; 
-   var App = window.App || {};
-   var $ = window.jQuery;
-   function RemoteDataStore(url) {
-       if(!url) {
-           throw new Error('No remote URL supplied');
-       } 
-       this.serverUrl = url;
-   } 
-
   
+    const  FORM_SELECTOR = '[data-coffee-order="form"]';
+    const CHECKLIST_SELECTOR ='[data-coffee-order="checklist"]';
+    var App = window.App || {};
+    var $ = window.jQuery;
+    function RemoteDataStore(url) {
+        if(!url) {
+            throw new Error('No remote URL supplied');
+        } 
+        this.serverUrl = url;
+    } 
+  
+   // let's make sure we only have one of eachof these:
+   let App = window.App;
+   let Truck = App.Truck;
+   let DataStore = App.DataStore;
+   let RemoteDataStore = App.RemoteDataStore;
+   let FormHandler = App.FormHandler;
+   let CheckList = App.Checklist;
+   let Validation = App.Validation;
+  
+  // the remote database where we we store orders
+  let remoteDS = new RemoteDataStore(SERVER_URL);
+
+   let myTruck = newTruck('12344',new remoteDS);
+   window.myTruck = myTruck;
+   App.Validation = Validation;
+   window.App = App
+  
+  
+   
+   
   
 RemoteDataStore.prototype.getAll = function (cb) {
     // make a "get" call to server URL
@@ -30,38 +52,36 @@ RemoteDataStore.prototype.getAll = function (cb) {
 
    };
    
+   RemoteDataStore.prototype.get = function (key,cb) {
+       // make a get call to the server, but pass an email address
+       //so that it returns just one order
+       // then call the function "cb" on the response
+       $.get(this.serverUrlResponse + '?emailAddress' + key, function (serverResponse) {
+           console.log(serverResponse);
+           cb(serverResponse);
+       });
+   }; 
+
+   RemoteDataStore.prototype.remove = function (key) {
+       //call the server url using the ajax 'DELETE' command
+       $.ajax(this.serverUrl + '?emailAddress=' + key, {type: 'DELETE'});
+   }; 
+
+   
+
    App.RemoteDataStore = RemoteDataStore;
    window.App = App;
 })(window);
      
 
+let Validation = {
+    isCompanyEmail: function (email) {
+        return /.+@isd535\.org$/.test(email);
+    }
+};
 
+ 
     
- 
-
-  
-
-    // let's make sure we only have one of eachof these:
-    let App = window.App;
-    let Truck = App.Truck;
-    let DataStore = App.DataStore;
-    let FormHandler = App.FormHandler;
-    let CheckList = App.Checklist;
-    let Validation = App.Validation;
-    let myTruck = newTruck('12344',new DataStore());
-
-    window.myTruck = myTruck;
-    App.Validation = Validation;
-    window.App = App
-    const  FORM_SELECTOR = '[data-coffee-order="form"]';
-    const CHECKLIST_SELECTOR ='[data-coffee-order="checklist"]';
- 
- 
-    let Validation = {
-        isCompanyEmail: function (email) {
-            return /.+@isd535\.org$/.test(email);
-        }
-    };
     // find the form that is being submitted and a create a formHandler objectS
     let formHandler = new FormHandler (FORM_SELECTOR);
     // find the checklist that is being updated and create a CheckList object
